@@ -21,6 +21,10 @@ Location to save file based on Operating System:
 For windows: It saves files in C:/ directory
 For Mac and Linux : Its saves files in /home/ directory
 
+License:
+-----------
+It contains MIT license, for details see the License.txt
+
 Details about author:
 ---------------------
 Name: Mohammad Naushad Bhat<br>
