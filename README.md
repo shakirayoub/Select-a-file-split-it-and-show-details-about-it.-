@@ -23,5 +23,5 @@ For Mac and Linux : Its saves files in /home/ directory
 
 Details about author:
 ---------------------
-Name: Mohammad Naushad Bhat
+Name: Mohammad Naushad Bhat<p>
 Email: mohdnaushad.12-cse-16@mietjammu.in
