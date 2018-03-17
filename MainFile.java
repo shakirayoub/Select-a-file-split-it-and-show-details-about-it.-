@@ -15,6 +15,7 @@ import java.nio.file.StandardCopyOption;
 /**
  * Main class of the program
  */
+//just adding a comment to test github
 public class Main {
     //declaring required fields
     private Frame myFrame;
