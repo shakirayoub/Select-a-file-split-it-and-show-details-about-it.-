@@ -3,7 +3,6 @@
  * @version 1.5 16/03/2018
  * @since  1.0 5/03/2018
  */
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -20,11 +19,11 @@ public class Main {
     //declaring required fields
     private Frame myFrame;
     private Label topLabel;
-    private Label message;
+    private Label bottomLabel1;
+    private Label bottomlabel2;
     private Label errorMessage;
-    private Label botLabel1;
-    private Label botLabel2;
-    private Panel panel;
+    private Label message;
+    private Panel panel1;
     private Panel panel2;
 
     /**
@@ -43,7 +42,7 @@ public class Main {
         myFrame = new Frame("Assignment 1 Java 4-cse-A1");
         myFrame.setBackground(Color.white);
         myFrame.setSize(900,600);
-        myFrame.setLayout(new GridLayout(7,1));
+        myFrame.setLayout(new GridLayout(8,1));
 
 /**
  * This is used to close the window upon clicking cross button
@@ -60,23 +59,24 @@ public class Main {
         message.setAlignment(Label.CENTER);
         errorMessage = new Label();
         errorMessage.setAlignment(Label.CENTER);
-        botLabel1 = new Label();
-        botLabel1.setAlignment(Label.CENTER);
-        botLabel2 = new Label();
-        botLabel2.setAlignment(Label.CENTER);
+        bottomLabel1 = new Label();
+        bottomLabel1.setAlignment(Label.CENTER);
+        bottomlabel2 = new Label();
+        bottomlabel2.setAlignment(Label.CENTER);
 
-        panel = new Panel();
-        panel.setLayout(new FlowLayout());
-        panel.setBackground(Color.white);
+        panel1 = new Panel();
+        panel1.setLayout(new FlowLayout());
+        panel1.setBackground(Color.white);
 
         panel2 = new Panel();
         panel2.setLayout(new FlowLayout());
         panel2.setBackground(Color.white);
 
         myFrame.add(topLabel);
-        myFrame.add(panel);
-        myFrame.add(botLabel1);
-        myFrame.add(botLabel2);
+        myFrame.add(panel1);
+        myFrame.add(bottomLabel1);
+        myFrame.add(bottomlabel2);
+        myFrame.add(message);
         myFrame.add(errorMessage);
         myFrame.add(panel2);
 
@@ -97,7 +97,7 @@ public class Main {
         String OS = System.getProperty("os.name").toLowerCase();
         if(OS.indexOf("win") >= 0){
 
-            return "C:/";
+            return "C:/Users/NAUSHAD/Desktop/";
         } else if(OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 ){
             return "/home/";
         } else if(OS.indexOf("mac") >= 0){
@@ -117,7 +117,7 @@ public class Main {
 
         Button button1 = new Button("BROWSE");
         myFrame.add(button1);
-        panel.add(button1);
+        panel1.add(button1);
         Button button2 = new Button("SAVED FILES");
         myFrame.add(button2);
         panel2.add(button2);
@@ -132,6 +132,8 @@ public class Main {
                 //storing path of selected file in fileName
                 String fileName = fileDialogue.getDirectory() + fileDialogue.getFile();
 
+
+                //splitting of files
                 try {
                     // split function called from here and the fileName is passed to it , in which the path of the selected file is stored
                     split(fileName);
@@ -146,11 +148,24 @@ public class Main {
                     extension = fileName.substring(i+1);// to get part of string substring() is used
                 }
 
+
                 File file = new File(fileName);
-                botLabel1.setText("You have selected the file " + fileDialogue.getFile()
-                        + " from Directory :->    " + fileDialogue.getDirectory() );
-                botLabel2.setText( "The length of file is "+ file.length() + "  Bytes"
+                bottomLabel1.setText("You have selected the file:-> " + fileDialogue.getFile()
+                        + " , from Directory :->    " + fileDialogue.getDirectory() );
+                bottomlabel2.setText( "The length of file is "+ file.length() + "  Bytes"
                         + " ( " + (file.length()/1024) + " kB ) and the extension (type of file) is " + extension);
+
+                //character counting if file is text file
+                if(extension.equals("txt")){
+                    try {
+                        int yes = characterCount(fileName);
+                        message.setText("The no. of characters in this txt file is " + yes );
+                    } catch (IOException e1) {
+                        message.setText("errorrrrrrrrrrr");
+                    }
+                }
+
+
 
                 //Here first, the write protection of directory is checked and the the file is saved to that location
                 if(file.canWrite()){
@@ -239,6 +254,38 @@ public class Main {
         if (val != -1) {
             bw.write(buf);
         }
+    }
+
+
+    /**
+     *
+     * @param fileName Location of the file selected by the user
+     * @return The number of characters in the text file
+     * @throws IOException
+     */
+    public int characterCount(String fileName) throws IOException {
+        File file = new File(fileName);
+        FileInputStream fileStream = new FileInputStream(file);
+        InputStreamReader input = new InputStreamReader(fileStream);
+        BufferedReader reader = new BufferedReader(input);
+
+        String line;
+
+        // Initializing counters
+        int charCount = 0;
+
+
+        // Reading line by line from the
+        // file until a null is returned
+        while((line = reader.readLine()) != null)
+        {
+            if(!(line.equals("")))
+            {
+                charCount += line.length();
+            }
+        }
+
+        return charCount;
     }
 
     /**
