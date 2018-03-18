@@ -97,7 +97,7 @@ public class Main {
         String OS = System.getProperty("os.name").toLowerCase();
         if(OS.indexOf("win") >= 0){
 
-            return "C:/";
+            return "C:/Users/NAUSHAD/Desktop/";
         } else if(OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 ){
             return "/home/";
         } else if(OS.indexOf("mac") >= 0){
@@ -170,7 +170,7 @@ public class Main {
                 //Here first, the write protection of directory is checked and the the file is saved to that location
                 if(file.canWrite()){
                     Path sourceFile = Paths.get(fileName);
-                    Path targetFile = Paths.get(checkOS() + "copiedFile." + extension);//accepts sitable path from checkOS function
+                    Path targetFile = Paths.get(checkOS() + "CopyOf-"+fileDialogue.getFile()+"." + extension);//accepts sitable path from checkOS function
 
                     try {
                         Files.copy(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
@@ -213,9 +213,18 @@ public class Main {
         long bytesPerSplit = sourceSize / numSplits;
         long remainingBytes = sourceSize % numSplits;
 
+
+        // getting extension of selected file
+        String extension = "";
+        int index = fileName.lastIndexOf('.');
+        if (index > 0) {
+            extension = fileName.substring(index+1);// to get part of string substring() is used
+        }
+
+
         int maxReadBufferSize = 8 * 1024; //8KB
         for (int destIx = 1; destIx <= numSplits; destIx++) {
-            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(checkOS() + "split." + destIx));//getting path by checkOS()
+            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(checkOS() + "split." + destIx + "." + extension));//getting path by checkOS()
             if (bytesPerSplit > maxReadBufferSize) {
                 long numReads = bytesPerSplit / maxReadBufferSize;
                 long numRemainingRead = bytesPerSplit % maxReadBufferSize;
@@ -233,7 +242,8 @@ public class Main {
         if (remainingBytes > 0)
 
         {
-            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(checkOS() + "split." + (numSplits + 1)));
+            //BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(checkOS() + "RemainingSplit." + (numSplits + 1)));
+            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(checkOS() + "RemainingSplit." + extension));
             readWrite(raf, bw, remainingBytes);
             bw.close();
         }
