@@ -310,9 +310,8 @@ public class Main {
      */
     //Main function -> to make the program work
     public static void main(String[] args) throws IOException {
-        Main awt = new Main();
-       // awt.checkOS();
-        awt.showFiles();
+        Main main = new Main();
+        main.showFiles();
     }
 
 }
