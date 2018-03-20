@@ -19,6 +19,7 @@ This program is platform independent.
 Location to save file based on Operating System:
 -------------------------------------------------
 For windows: It saves files in C:/ directory
+<br>
 For Mac and Linux : Its saves files in /home/ directory
 
 License:
