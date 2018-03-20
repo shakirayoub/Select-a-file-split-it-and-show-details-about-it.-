@@ -12,6 +12,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+
+
+
+
 /**
  * Main class of the program
  */
@@ -53,6 +57,7 @@ public class Main {
             }
         });
 
+
         topLabel = new Label();
         topLabel.setAlignment(Label.CENTER);
         message = new Label();
@@ -66,11 +71,8 @@ public class Main {
 
         panel1 = new Panel();
         panel1.setLayout(new FlowLayout());
-        panel1.setBackground(Color.white);
-
         panel2 = new Panel();
         panel2.setLayout(new FlowLayout());
-        panel2.setBackground(Color.white);
 
         myFrame.add(topLabel);
         myFrame.add(panel1);
@@ -82,7 +84,6 @@ public class Main {
 
 
         myFrame.setVisible(true);
-
         topLabel.setText("Click on BROWSE button to select a file. To see final files , Click on SAVED FILES button");
     }
 
@@ -93,18 +94,39 @@ public class Main {
      * @return  It returns the suitable path based on the Operating System
      */
 
-    public static String checkOS(){
+    public static String checkOS() {
+        String store = "";
         String OS = System.getProperty("os.name").toLowerCase();
         if(OS.indexOf("win") >= 0){
-
-            return "C:/Users/NAUSHAD/Desktop/";
+            store = "C:/Users/NAUSHAD/";
         } else if(OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 ){
-            return "/home/";
-        } else if(OS.indexOf("mac") >= 0){
-            return "/home/";
-        } else
+            store = "/home/";
+        } else  if(OS.indexOf("mac") >= 0){
+            store = "/home/";
+        } else {
             return null;
+        }
+        return store;
     }
+
+    /**
+     *
+     * @param fileName Full path of the file whose extension is to be found
+     * @return the extension like txt, java, mp3 etc
+     */
+
+    public static String getExtension(String fileName){
+
+        // getting extension of selected file
+                String extension = "";
+                int i = fileName.lastIndexOf('.');
+                if (i > 0) {
+                    extension = fileName.substring(i+1);// to get part of string substring() is used. Here (i+1) is the begining index of the substring.
+                }
+                return extension;
+
+    }
+
 
     /**
      * This function does the following tasks:
@@ -123,15 +145,14 @@ public class Main {
         panel2.add(button2);
 
         FileDialog fileDialogue = new FileDialog(myFrame);
-
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 fileDialogue.setVisible(true);
 
                 //storing path of selected file in fileName
                 String fileName = fileDialogue.getDirectory() + fileDialogue.getFile();
-
 
                 //splitting of files
                 try {
@@ -141,27 +162,19 @@ public class Main {
                     e1.printStackTrace();
                 }
 
-               // getting extension of selected file
-                String extension = "";
-                int i = fileName.lastIndexOf('.');
-                if (i > 0) {
-                    extension = fileName.substring(i+1);// to get part of string substring() is used
-                }
-
-
                 File file = new File(fileName);
                 bottomLabel1.setText("You have selected the file:-> " + fileDialogue.getFile()
                         + " , from Directory :->    " + fileDialogue.getDirectory() );
                 bottomlabel2.setText( "The length of file is "+ file.length() + "  Bytes"
-                        + " ( " + (file.length()/1024) + " kB ) and the extension (type of file) is " + extension);
+                        + " ( " + (file.length()/1024) + " kB ) and the extension (type of file) is " + getExtension(fileName));
 
                 //character counting if file is text file
-                if(extension.equals("txt")){
+                if(getExtension(fileName).equals("txt")){
                     try {
                         int yes = characterCount(fileName);
                         message.setText("The no. of characters in this txt file is " + yes );
                     } catch (IOException e1) {
-                        message.setText("errorrrrrrrrrrr");
+                        message.setText("error");
                     }
                 }
 
@@ -170,7 +183,7 @@ public class Main {
                 //Here first, the write protection of directory is checked and the the file is saved to that location
                 if(file.canWrite()){
                     Path sourceFile = Paths.get(fileName);
-                    Path targetFile = Paths.get(checkOS() + "CopyOf-"+fileDialogue.getFile()+"." + extension);//accepts sitable path from checkOS function
+                    Path targetFile = Paths.get(checkOS() + "CopyOf-"+fileDialogue.getFile()+"." + getExtension(fileName));//accepts sitable path from checkOS function
 
                     try {
                         Files.copy(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
@@ -180,16 +193,21 @@ public class Main {
 
 
                 }
+
+
             }
         });
 
+//button2.addActionListener(e -> fileDialogue.setVisible(true));
 
+        //fileDialogue.setDirectory("C:\\");
 
         button2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fileDialogue.setDirectory(checkOS());
                 fileDialogue.setVisible(true);
+
 
 
             }
@@ -213,18 +231,9 @@ public class Main {
         long bytesPerSplit = sourceSize / numSplits;
         long remainingBytes = sourceSize % numSplits;
 
-
-        // getting extension of selected file
-        String extension = "";
-        int index = fileName.lastIndexOf('.');
-        if (index > 0) {
-            extension = fileName.substring(index+1);// to get part of string substring() is used
-        }
-
-
         int maxReadBufferSize = 8 * 1024; //8KB
         for (int destIx = 1; destIx <= numSplits; destIx++) {
-            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(checkOS() + "split." + destIx + "." + extension));//getting path by checkOS()
+            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(checkOS() + "split." + destIx + "." + getExtension(fileName)));//getting path by checkOS()
             if (bytesPerSplit > maxReadBufferSize) {
                 long numReads = bytesPerSplit / maxReadBufferSize;
                 long numRemainingRead = bytesPerSplit % maxReadBufferSize;
@@ -243,7 +252,7 @@ public class Main {
 
         {
             //BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(checkOS() + "RemainingSplit." + (numSplits + 1)));
-            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(checkOS() + "RemainingSplit." + extension));
+            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(checkOS() + "RemainingSplit." + getExtension(fileName)));
             readWrite(raf, bw, remainingBytes);
             bw.close();
         }
@@ -253,9 +262,9 @@ public class Main {
 
     /**
      *
-     * @param raf
-     * @param bw
-     * @param numBytes
+     * @param raf The file to be splitted
+     * @param bw The file to be written to
+     * @param numBytes Size of splitted file in bytes
      * @throws IOException
      */
     public static void readWrite(RandomAccessFile raf, BufferedOutputStream bw, long numBytes) throws IOException {
@@ -306,7 +315,7 @@ public class Main {
     //Main function -> to make the program work
     public static void main(String[] args) throws IOException {
         Main awt = new Main();
-        awt.checkOS();
+       // awt.checkOS();
         awt.showFiles();
     }
 
